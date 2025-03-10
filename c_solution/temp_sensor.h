@@ -1,7 +1,7 @@
 /* 
    This header file contains example structs and definitions
    for demonstrating how µC pins might be set for a given microcontroller.
-   It will be commonly provided by µC vendor libraries
+   It will be usually provided by µC vendor libraries
 */
 
 #define GPIO_IN  0
