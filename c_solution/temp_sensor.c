@@ -140,7 +140,7 @@ int main() {
         Sleep(50);  // Using Windows sleep function here. In real life application it must be replaced by the corresponding sleep function of the µC.
 
         i++;
-        if (i > 10) {break;}  // for debugging on PC 
+        if (i > 10) {break;}  // don't run forever for the demo use case on PC
     }
 
     return 0;
