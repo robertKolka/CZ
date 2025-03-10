@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "temp_sensor.h"
-
+#include <time.h>
+#include <stdlib.h>
 
 void set_LED_pins() {
     // set pins 1, 2 and 3 to GPIO
@@ -39,11 +40,32 @@ void set_green_LED() {
     setGPIO_t.pin3 = GPIO_LOW;
 }
 
+int read_ADC(){
+    // It is assumed that reading of the internal ADC returns integers between 0 and 2^[ADC register size],
+    // so e.g. 0 - 65535 for a 16-bit ADC
+    int input_voltage_bits = 120;  // example value of voltage at ADC input
+    int noise_range_bits = 5;    // example noise range for this ADC 
+    int reading_bits = input_voltage_bits + rand() % (2*noise_range_bits + 1) - noise_range_bits;  // add random noise to the measured voltage
+    return reading_bits;
+}
+
+
+
+void ISR_CPU_timer() {
+
+}
+
+
 int main() {
-    printf("Running temp_sensor.c");
+    printf("Running temp_sensor.c\n");
+
+    // Initialization
     set_LED_pins();
     set_EEPROM_pins();
     set_ADC_pin();
+
+    int a = read_ADC();
+    
 
     return 0;
 }
