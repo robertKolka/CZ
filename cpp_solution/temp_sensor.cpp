@@ -41,7 +41,7 @@ public:
     unsigned int read_write_I2C(unsigned int slave_address, unsigned int RW) {
         // reads from / writes to the device with the given address slave_address
         // the RW flag indicates write or read access
-        return 0x1234;
+        return 0;
     };
 
     unsigned int read_ADC(){
@@ -141,6 +141,23 @@ void set_LEDs(µC µC_temp_sensor1) {
     
 }
 
+
+int set_degrees_per_digit(µC& µC_temp_sensor) {
+    // sets degrees_per_digit based on the HW revision of the temp sensor
+    hw_revision_temp_sensor = read_EEPROM_one_byte(µC_temp_sensor, EEPROM_ADDRESS_HW_REV); // sets the global variable 
+    if (hw_revision_temp_sensor == 0) {
+        degrees_per_digit = 1;
+    }
+    else if (hw_revision_temp_sensor == 1) {
+        degrees_per_digit = 0.1;
+    } 
+    else {
+        // error handling for unexpected EEPROM value, e.g. abort execution
+    };
+
+    return degrees_per_digit;
+}
+
 void ISR_CPU_timer1() {
     // ISR for CPU timer 1
     int ADC_reading;
@@ -152,7 +169,8 @@ int main() {
 
     cout << "Running temp_sensor.cpp" << endl;
     setup_µC_peripherals(µC_temp_sensor1);
-    hw_revision_temp_sensor = read_EEPROM_one_byte(µC_temp_sensor1, EEPROM_ADDRESS_HW_REV); // sets the global variable 
+    
+    degrees_per_digit = set_degrees_per_digit(µC_temp_sensor1);
 
     int i = 0;  // break condition for the while loop - just for debugging
     while(1) {

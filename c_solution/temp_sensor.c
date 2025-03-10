@@ -59,7 +59,7 @@ void set_green_LED() {
 unsigned int read_write_I2C(unsigned int slave_address, unsigned int RW) {
     // reads from / writes to the device with the given address slave_address
     // the RW flag indicates write or read access
-    return 0x1234;
+    return 0;
 }
 
 unsigned int read_EEPROM_one_byte(unsigned int address) {
@@ -83,16 +83,6 @@ unsigned int ADC_reading_to_temperature(int ADC_reading) {
     // and that the output voltage of the temperature sensor is positive
     unsigned int temp_out;
 
-    if (hw_revision_temp_sensor == 0) {
-        degrees_per_digit = 1;
-    }
-    else if (hw_revision_temp_sensor == 1) {
-        degrees_per_digit = 0.1;
-    } 
-    else {
-        // error handling for unexpected EEPROM value, e.g. abort execution
-    };
-
     temp_out = ADC_reading * degrees_per_digit;
     return temp_out;
 }
@@ -114,6 +104,22 @@ void set_LEDs() {
     
 }
 
+int set_degrees_per_digit() {
+    // sets degrees_per_digit based on the HW revision of the temp sensor
+    hw_revision_temp_sensor = read_EEPROM_one_byte(EEPROM_ADDRESS_HW_REV); // sets the global variable 
+    if (hw_revision_temp_sensor == 0) {
+        degrees_per_digit = 1;
+    }
+    else if (hw_revision_temp_sensor == 1) {
+        degrees_per_digit = 0.1;
+    } 
+    else {
+        // error handling for unexpected EEPROM value, e.g. abort execution
+    };
+
+    return degrees_per_digit;
+}
+
 
 void ISR_CPU_timer1() {
     // ISR for CPU timer 1
@@ -132,12 +138,15 @@ int main() {
     set_ADC_pin();
     set_CPU_timer1_µs(100);
 
-    hw_revision_temp_sensor = read_EEPROM_one_byte(EEPROM_ADDRESS_HW_REV); // sets the global variable 
+    degrees_per_digit = set_degrees_per_digit();
 
     int i = 0;  // break condition for the while loop - just for debugging
     while(1) {
         set_LEDs(); 
         Sleep(50);  // Using Windows sleep function here. In real life application it must be replaced by the corresponding sleep function of the µC.
+
+        ISR_CPU_timer1();
+        printf("Temperature = %d\n", temperature);
 
         i++;
         if (i > 10) {break;}  // don't run forever for the demo use case on PC
