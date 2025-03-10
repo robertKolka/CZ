@@ -12,25 +12,25 @@ int hw_revision_temp_sensor; // Hardware revision of the temp sensor. Will be re
 int degrees_per_digit = 0;   // Resolution of the temp sensor. Depends of the HW revision. 
 int temperature = 0;         // Temperature read out from the sensor. Will be set by CPU timer 1 ISR.
 
-struct µC_pins pinsUseCaseTemp;
+struct µC_pins µC_pins_setup;
 struct set_GPIO setGPIO_t;
 
 void set_LED_pins() {
     // set pins 1, 2 and 3 to GPIO
-    pinsUseCaseTemp.pin1 = GPIO_OUT; // red
-    pinsUseCaseTemp.pin2 = GPIO_OUT; // yellow
-    pinsUseCaseTemp.pin3 = GPIO_OUT; // green
+    µC_pins_setup.pin1 = GPIO_OUT; // red
+    µC_pins_setup.pin2 = GPIO_OUT; // yellow
+    µC_pins_setup.pin3 = GPIO_OUT; // green
 }
 
 void set_EEPROM_pins() {
     // set pins 4 and 5 to I2C
-    pinsUseCaseTemp.pin4 = I2C_SCL;
-    pinsUseCaseTemp.pin5 = I2C_SDA;
+    µC_pins_setup.pin4 = I2C_SCL;
+    µC_pins_setup.pin5 = I2C_SDA;
 }
 
 void set_ADC_pin() {
     // set pins 4 and 5 to I2C
-    pinsUseCaseTemp.pin6 = ADC;
+    µC_pins_setup.pin6 = ADC;
 }
 
 void set_CPU_timer1_µs(int µsecs){
