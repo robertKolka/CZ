@@ -29,7 +29,7 @@ void set_EEPROM_pins() {
 }
 
 void set_ADC_pin() {
-    // set pins 4 and 5 to I2C
+    // set pin 6 to ADC
     µC_pins_setup.pin6 = ADC;
 }
 
