@@ -30,6 +30,3 @@ struct set_GPIO {
     int pin5;
     int pin6;
 };
-
-struct µC_pins pinsUseCaseTemp;
-struct set_GPIO setGPIO_t;
