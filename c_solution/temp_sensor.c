@@ -59,7 +59,7 @@ void set_green_LED() {
 unsigned int read_write_I2C(unsigned int slave_address, unsigned int RW) {
     // reads from / writes to the device with the given address slave_address
     // the RW flag indicates write or read access
-    return 0;
+    return 0x1234;
 }
 
 unsigned int read_EEPROM_one_byte(unsigned int address) {
