@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Windows.h>
 #include "temp_sensor.hpp"
 using namespace std;
 
@@ -40,11 +41,22 @@ public:
     unsigned int read_write_I2C(unsigned int slave_address, unsigned int RW) {
         // reads from / writes to the device with the given address slave_address
         // the RW flag indicates write or read access
-        return 0;
-    }
+        return 0x1234;
+    };
+
+    unsigned int read_ADC(){
+        // It is assumed that reading of the internal ADC returns integers between 0 and 2^[ADC register size],
+        // so e.g. 0 - 65535 for a 16-bit ADC
+        unsigned int input_voltage_bits = 120;  // example value of voltage at ADC input
+        unsigned int noise_range_bits = 5;    // example noise range for this ADC 
+        unsigned int reading_bits = input_voltage_bits + rand() % (2*noise_range_bits + 1) - noise_range_bits;  // add random noise to the measured voltage
+        return reading_bits;
+    };
+    
 
 };
 
+µC µC_temp_sensor1; // instance created globally so that the ISR knows it (cannot be passed as parameter into the ISR)
 
 
 void setup_µC_peripherals(µC& µC_temp_sensor)
@@ -93,14 +105,63 @@ unsigned int read_EEPROM_one_byte(µC& µC_temp_sensor, unsigned int address) {
 }
 
 
+unsigned int ADC_reading_to_temperature(int ADC_reading) {
+    // it is assumed that the ADC measurement range covers only positive voltages (e.g. 0 - 3.3V)
+    // and that the output voltage of the temperature sensor is positive
+    unsigned int temp_out;
+
+    if (hw_revision_temp_sensor == 0) {
+        degrees_per_digit = 1;
+    }
+    else if (hw_revision_temp_sensor == 1) {
+        degrees_per_digit = 0.1;
+    } 
+    else {
+        // error handling for unexpected EEPROM value, e.g. abort execution
+    };
+
+    temp_out = ADC_reading * degrees_per_digit;
+    return temp_out;
+}
+
+void set_LEDs(µC µC_temp_sensor1) {
+    int last_temperature = temperature; // create a copy so that it won't be changed by the ISR
+
+    if ((last_temperature < TEMPERATURE_THRESHOLD_CRITICAL_LOW) || (last_temperature >= TEMPERATURE_THRESHOLD_CRITICAL_LOW)) {
+        set_red_LED(µC_temp_sensor1);
+    }
+    else {
+        if (last_temperature < TEMPERATURE_THRESHOLD_NORMAL) {
+            set_green_LED(µC_temp_sensor1);
+        }
+        else {
+            set_yellow_LED(µC_temp_sensor1);
+        }
+    }
+    
+}
+
+void ISR_CPU_timer1() {
+    // ISR for CPU timer 1
+    int ADC_reading;
+    ADC_reading = µC_temp_sensor1.read_ADC();  // the instance of the µC class is hardcoded here, because it cannot be passed as a parameter to the ISR
+    temperature = ADC_reading_to_temperature(ADC_reading); // sets the global variable 
+}
+
 int main() {
 
     cout << "Running temp_sensor.cpp" << endl;
-
-    µC µC_temp_sensor1;
     setup_µC_peripherals(µC_temp_sensor1);
-    
     hw_revision_temp_sensor = read_EEPROM_one_byte(µC_temp_sensor1, EEPROM_ADDRESS_HW_REV); // sets the global variable 
+
+    int i = 0;  // break condition for the while loop - just for debugging
+    while(1) {
+        set_LEDs(µC_temp_sensor1); 
+        Sleep(50);  // Using Windows sleep function here. In real life application it must be replaced by the corresponding sleep function of the µC.
+
+        i++;
+        if (i > 10) {break;}  // don't run forever for the demo use case on PC
+    }
 
     return 0;
 }
