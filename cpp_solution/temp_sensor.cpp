@@ -8,7 +8,6 @@ using namespace std;
 #define TEMPERATURE_THRESHOLD_CRITICAL_LOW 5
 #define TEMPERATURE_THRESHOLD_CRITICAL_HIGH 105
 
-int hw_revision_temp_sensor; // Hardware revision of the temp sensor. Will be read out from EEPROM.
 int degrees_per_digit = 0;   // Resolution of the temp sensor. Depends of the HW revision. 
 int temperature = 0;         // Temperature read out from the sensor. Will be set by CPU timer 1 ISR.
 
@@ -104,21 +103,10 @@ unsigned int read_EEPROM_one_byte(µC& µC_temp_sensor, unsigned int address) {
     return eeprom_reading; // just an example value for Rev-A of the temp sensor
 }
 
-
 unsigned int ADC_reading_to_temperature(int ADC_reading) {
     // it is assumed that the ADC measurement range covers only positive voltages (e.g. 0 - 3.3V)
     // and that the output voltage of the temperature sensor is positive
     unsigned int temp_out;
-
-    if (hw_revision_temp_sensor == 0) {
-        degrees_per_digit = 1;
-    }
-    else if (hw_revision_temp_sensor == 1) {
-        degrees_per_digit = 0.1;
-    } 
-    else {
-        // error handling for unexpected EEPROM value, e.g. abort execution
-    };
 
     temp_out = ADC_reading * degrees_per_digit;
     return temp_out;
@@ -141,9 +129,9 @@ void set_LEDs(µC µC_temp_sensor1) {
     
 }
 
-
 void set_degrees_per_digit(µC& µC_temp_sensor) {
     // sets degrees_per_digit based on the HW revision of the temp sensor
+    int hw_revision_temp_sensor;
     hw_revision_temp_sensor = read_EEPROM_one_byte(µC_temp_sensor, EEPROM_ADDRESS_HW_REV); // sets the global variable 
     if (hw_revision_temp_sensor == 0) {
         degrees_per_digit = 1;
@@ -154,7 +142,6 @@ void set_degrees_per_digit(µC& µC_temp_sensor) {
     else {
         // error handling for unexpected EEPROM value, e.g. abort execution
     };
-
 }
 
 void ISR_CPU_timer1() {

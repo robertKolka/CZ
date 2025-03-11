@@ -8,7 +8,6 @@
 #define TEMPERATURE_THRESHOLD_CRITICAL_LOW 5
 #define TEMPERATURE_THRESHOLD_CRITICAL_HIGH 105
 
-int hw_revision_temp_sensor; // Hardware revision of the temp sensor. Will be read out from EEPROM.
 int degrees_per_digit = 0;   // Resolution of the temp sensor. Depends of the HW revision. 
 int temperature = 0;         // Temperature read out from the sensor. Will be set by CPU timer 1 ISR.
 
@@ -106,6 +105,7 @@ void set_LEDs() {
 
 void set_degrees_per_digit() {
     // sets degrees_per_digit based on the HW revision of the temp sensor
+    int hw_revision_temp_sensor;
     hw_revision_temp_sensor = read_EEPROM_one_byte(EEPROM_ADDRESS_HW_REV); // sets the global variable 
     if (hw_revision_temp_sensor == 0) {
         degrees_per_digit = 1;
