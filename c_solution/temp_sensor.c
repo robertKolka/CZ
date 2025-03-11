@@ -126,23 +126,6 @@ void ISR_CPU_timer1() {
     temperature = ADC_reading_to_temperature(ADC_reading); // sets the global variable 
 }
 
-int tmp_mva[] = {1,1};
-int moving_average(int length, int new_value) {
-
-    int sum = 0;
-    for (int i = 0; i < length; i++) {
-        if (i < length - 1) {
-            tmp_mva[i] = tmp_mva[i+1];
-            sum += tmp_mva[i];
-        }
-        else {
-            tmp_mva[i] = new_value;
-            sum += tmp_mva[i];
-        }
-    }
-    return sum / length;
-}
-
 int main() {
     printf("Running temp_sensor.c\n");
     int mva;
@@ -159,12 +142,6 @@ int main() {
     while(1) {
         set_LEDs(); 
         Sleep(50);  // Using Windows sleep function here. In real life application it must be replaced by the corresponding sleep function of the µC.
-
-        ISR_CPU_timer1();
-        printf("Temperature = %d\n", temperature);
-
-        mva = moving_average(2, temperature);
-        printf("temperature mva filtered = %d\n", mva);
 
         i++;
         if (i > 10) {break;}  // don't run forever for the demo use case on PC
