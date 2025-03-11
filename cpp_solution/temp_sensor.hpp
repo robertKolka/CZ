@@ -32,6 +32,6 @@ struct set_GPIO {
 
 };
 
-struct cpu1_timer {
-    int cpu1_timer_period;
+struct cpu_timer1 {
+    int cpu_timer1_period;
 };

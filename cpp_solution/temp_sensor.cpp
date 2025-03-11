@@ -15,7 +15,7 @@ class µC {
 public:
     struct µC_pins µC_pins_setup;
     struct set_GPIO setGPIO_t;
-    struct cpu1_timer cpu1_timer_t;
+    struct cpu_timer1 cpu_timer1_t;
 
     // default constructor
     µC() {
@@ -33,7 +33,7 @@ public:
         setGPIO_t.pin5 = 0;
         setGPIO_t.pin6 = 0;
 
-        cpu1_timer_t.cpu1_timer_period = 0;
+        cpu_timer1_t.cpu_timer1_period = 0;
     }
 
     // µC methods
@@ -73,7 +73,7 @@ void setup_µC_peripherals(µC& µC_temp_sensor)
     µC_temp_sensor.µC_pins_setup.pin6 = ADC;
 
     // set cpu1 timer period to 100 µs
-    µC_temp_sensor.cpu1_timer_t.cpu1_timer_period = 100;
+    µC_temp_sensor.cpu_timer1_t.cpu_timer1_period = 100;
 
 }
 

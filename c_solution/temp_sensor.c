@@ -13,6 +13,7 @@ int temperature = 0;         // Temperature read out from the sensor. Will be se
 
 struct µC_pins µC_pins_setup;
 struct set_GPIO setGPIO_t;
+struct cpu_timer1 cpu_timer1_t;
 
 void set_LED_pins() {
     // set pins 1, 2 and 3 to GPIO
@@ -34,6 +35,7 @@ void set_ADC_pin() {
 
 void set_CPU_timer1_µs(int µsecs){
     // sets the CPU timer 1 to interrupt every µsecs microseconds
+    cpu_timer1_t.cpu_timer1_period = 100;
 }
 
 void set_red_LED() {

@@ -30,3 +30,7 @@ struct set_GPIO {
     int pin5;
     int pin6;
 };
+
+struct cpu_timer1 {
+    int cpu_timer1_period;
+};
