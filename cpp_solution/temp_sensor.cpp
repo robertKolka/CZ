@@ -127,7 +127,7 @@ unsigned int ADC_reading_to_temperature(int ADC_reading) {
 void set_LEDs(µC µC_temp_sensor1) {
     int last_temperature = temperature; // create a copy so that it won't be changed by the ISR
 
-    if ((last_temperature < TEMPERATURE_THRESHOLD_CRITICAL_LOW) || (last_temperature >= TEMPERATURE_THRESHOLD_CRITICAL_LOW)) {
+    if ((last_temperature < TEMPERATURE_THRESHOLD_CRITICAL_LOW) || (last_temperature >= TEMPERATURE_THRESHOLD_CRITICAL_HIGH)) {
         set_red_LED(µC_temp_sensor1);
     }
     else {
