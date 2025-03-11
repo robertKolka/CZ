@@ -104,7 +104,7 @@ void set_LEDs() {
     
 }
 
-int set_degrees_per_digit() {
+void set_degrees_per_digit() {
     // sets degrees_per_digit based on the HW revision of the temp sensor
     hw_revision_temp_sensor = read_EEPROM_one_byte(EEPROM_ADDRESS_HW_REV); // sets the global variable 
     if (hw_revision_temp_sensor == 0) {
@@ -116,8 +116,6 @@ int set_degrees_per_digit() {
     else {
         // error handling for unexpected EEPROM value, e.g. abort execution
     };
-
-    return degrees_per_digit;
 }
 
 

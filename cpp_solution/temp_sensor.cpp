@@ -142,7 +142,7 @@ void set_LEDs(µC µC_temp_sensor1) {
 }
 
 
-int set_degrees_per_digit(µC& µC_temp_sensor) {
+void set_degrees_per_digit(µC& µC_temp_sensor) {
     // sets degrees_per_digit based on the HW revision of the temp sensor
     hw_revision_temp_sensor = read_EEPROM_one_byte(µC_temp_sensor, EEPROM_ADDRESS_HW_REV); // sets the global variable 
     if (hw_revision_temp_sensor == 0) {
@@ -155,7 +155,6 @@ int set_degrees_per_digit(µC& µC_temp_sensor) {
         // error handling for unexpected EEPROM value, e.g. abort execution
     };
 
-    return degrees_per_digit;
 }
 
 void ISR_CPU_timer1() {
