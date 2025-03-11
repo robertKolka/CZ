@@ -39,7 +39,7 @@ public:
 
     // µC methods
     unsigned int read_write_I2C(unsigned int slave_address, unsigned int RW) {
-        // reads from / writes to the device with the given address slave_address
+        // reads from / writes to the device with the given slave_address
         // the RW flag indicates write or read access
         return 0;
     };
@@ -170,7 +170,7 @@ int main() {
     cout << "Running temp_sensor.cpp" << endl;
     setup_µC_peripherals(µC_temp_sensor1);
     
-    degrees_per_digit = set_degrees_per_digit(µC_temp_sensor1);
+    set_degrees_per_digit(µC_temp_sensor1);
 
     int i = 0;  // break condition for the while loop - just for debugging
     while(1) {
